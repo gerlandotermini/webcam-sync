@@ -28,14 +28,13 @@ try {
 
     # Map weather codes to emoji
     switch ($weatherCode) {
-        { $_ -ge 200 -and $_ -lt 300 } { $emoji = [char]0x26C8; break }
-        { $_ -ge 300 -and $_ -lt 600 } { $emoji = [char]0x1F327; break }
-        { $_ -ge 600 -and $_ -lt 700 } { $emoji = [char]0x2744; break }
-        { $_ -ge 700 -and $_ -lt 800 } { $emoji = [char]0x1F32B; break }
-        800 { $emoji = [char]0x2600; break }
-        801 { $emoji = [char]0x1F324; break }
-        { $_ -gt 801 -and $_ -lt 805 } { $emoji = [char]0x2601; break }
-        default { $emoji = "" }
+        { $_ -ge 200 -and $_ -lt 300 } { $emoji = "⛈️"; break }    # Thunderstorm
+        { $_ -ge 300 -and $_ -lt 600 } { $emoji = "🌧️"; break }    # Rain/Drizzle
+        { $_ -ge 600 -and $_ -lt 700 } { $emoji = "❄️"; break }    # Snow
+        { $_ -ge 700 -and $_ -lt 800 } { $emoji = "🌫️"; break }    # Atmosphere (mist, smoke, haze)
+        800                        { $emoji = "☀️"; break }        # Clear
+        { $_ -gt 800 -and $_ -lt 900 } { $emoji = "☁️"; break }    # Clouds
+        default                    { $emoji = "🌡️"; break }       # Unknown / fallback
     }
 }
 catch {
@@ -45,7 +44,7 @@ catch {
 }
 
 # Build overlay texts
-$weatherText = "$emoji $currentTemp$degree C - $forecastDesc"
+$weatherText = "$currentTemp$degree C   $emoji $forecastDesc"
 $dateTimeText = $now.ToString($config.dateFormat)
 
 # Build FFmpeg filter with fonts from config
