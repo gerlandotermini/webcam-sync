@@ -10,5 +10,6 @@
   "ffmpegPath": "C:/Program Files/ffmpeg/bin/ffmpeg.exe",
   "fontEmoji": "/Windows/Fonts/seguiemj.ttf",
   "fontDate": "/Windows/Fonts/cour.ttf",
+  "dateFormat": "yyyy-MM-dd HH.mm",
   "imagePath": "C:/path/to/local_image_file.jpg"
 }

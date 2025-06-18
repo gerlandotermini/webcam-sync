@@ -36,7 +36,8 @@ This PowerShell script captures an image from your USB webcam, overlays the curr
   "ffmpegPath": "C:/Program Files/ffmpeg/bin/ffmpeg.exe",
   "fontEmoji": "/Windows/Fonts/seguiemj.ttf",
   "fontDate": "/Windows/Fonts/cour.ttf",
-  "imagePath": "C:/Users/you/webcam/live.jpg"
+  "dateFormat": "yyyy-MM-dd HH.mm",
+  "imagePath": "C:/Users/you/webcam/webcam.jpg"
 }
 ```
 

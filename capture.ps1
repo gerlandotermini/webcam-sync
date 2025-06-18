@@ -46,7 +46,7 @@ catch {
 
 # Build overlay texts
 $weatherText = "$emoji $currentTemp$degree C - $forecastDesc"
-$dateTimeText = $now.ToString("yyyy-MM-dd HH.mm")
+$dateTimeText = $now.ToString($config.dateFormat)
 
 # Build FFmpeg filter with fonts from config
 $filter = "drawtext=fontfile=$($config.fontEmoji):text='$weatherText':fontcolor=white:fontsize=24:box=1:boxcolor=black@0.5:boxborderw=5:x=10:y=h-text_h-10," +
