@@ -3,6 +3,8 @@
 
 This PowerShell script captures an image from your USB webcam, overlays the current local weather forecast and date/time, and uploads it to a remote SFTP server. It’s designed to run automatically at regular intervals using Windows Task Scheduler.
 
+---
+
 ## 📦 Setup Instructions
 
 ### 1️⃣ Install Dependencies
@@ -13,6 +15,8 @@ This PowerShell script captures an image from your USB webcam, overlays the curr
 - **OpenWeatherMap API Key**  
   Create a free account at [openweathermap.org](https://openweathermap.org/api) and generate an API key for accessing the weather data.
 
+---
+
 ## 2️⃣ Set Up Your Configuration
 
 - Copy `config-sample.json` to `config.json`
@@ -21,8 +25,9 @@ This PowerShell script captures an image from your USB webcam, overlays the curr
   - Latitude & longitude (decimal degrees)
   - SFTP server details (host, port, user, key path)
   - Local paths to ffmpeg, fonts, and webcam image destination
+  - Webcam device name and capture resolution
 
-**Example:**  
+**Example:**
 ```json
 {
   "apiKey": "your_api_key_here",
@@ -43,21 +48,57 @@ This PowerShell script captures an image from your USB webcam, overlays the curr
 }
 ```
 
-## 3️⃣ Test the Script
+**Notes:**
+- `videoDevice` is the exact name of your webcam as detected by ffmpeg.
+- `videoSize` sets the image resolution (common values: "1280x720", "960x720", "640x480").
 
-Open PowerShell, navigate to the project folder, and run:
+---
 
-```powershell
-.\capture.ps1
+## 📷 How to Find Your Webcam Device Name and Supported Resolutions
+
+### 📌 List Available Video Devices
+
+Open a Command Prompt (or PowerShell) and run:
+
+```
+"C:\Program Files\ffmpeg\bin\ffmpeg.exe" -list_devices true -f dshow -i dummy
 ```
 
-Check the output image and confirm uploads are working.
+Look for a section like:
+```
+[dshow @ 0000020...] DirectShow video devices
+[dshow @ 0000020...]  "USB Video Device"
+[dshow @ 0000020...]  "Logitech HD Webcam C270"
+```
+
+Copy the exact device name into your `config.json` under the `"videoDevice"` key.
+
+### 📌 List Supported Resolutions for a Device
+
+To see supported resolutions, run:
+
+```
+"C:\Program Files\ffmpeg\bin\ffmpeg.exe" -f dshow -list_options true -i video="USB Video Device"
+```
+
+Replace `"USB Video Device"` with your actual device name.
+
+Example output:
+```
+[dshow @ ...]   960x720
+[dshow @ ...]   1280x720
+[dshow @ ...]   640x480
+```
+
+Pick a resolution and enter it in your `config.json` under `"videoSize"`.
+
+---
 
 ## 📅 Automating with Windows Task Scheduler
 
-To run this script at regular intervals automatically:
+To run this script automatically at regular intervals:
 
-### Create a New Task:
+**Create a New Task:**
 1. Press `Windows + R`, type `taskschd.msc`, and press Enter.
 2. Click **Create Task**
 
@@ -91,19 +132,23 @@ To run this script at regular intervals automatically:
   ```
 
 **Conditions Tab:**
-- Uncheck **Start the task only if the computer is on AC power** (optional)
+- (Optional) Uncheck **Start the task only if the computer is on AC power**
 
 Click **OK** and enter your Windows password if prompted.
+
+---
 
 ## 📄 Project Structure
 
 ```
 webcam-weather/
-├── capture.ps1               # Main script
-├── config-sample.json        # Sample config for users to copy and edit
-├── .gitignore                # Prevents config.json from being committed
-└── README.md                 # This documentation
+├── capture.ps1
+├── config-sample.json
+├── .gitignore
+└── README.md
 ```
+
+---
 
 ## 🔄 Example Schedule
 
@@ -111,13 +156,17 @@ webcam-weather/
 |------------|----------|------------|
 | 7:30 AM    | 4:30 PM  | Every 10 min |
 
+---
+
 ## 📌 Notes
 
 - `config.json` is excluded from version control via `.gitignore`.
-- The script uses OpenWeatherMap’s **5-day / 3-hour forecast API** to retrieve local weather conditions.
-- ffmpeg must be installed and your webcam must be detected as a DirectShow device on Windows.
-- The script is designed for PowerShell 5.1+ and Windows Task Scheduler.
+- The script uses OpenWeatherMap’s **5-day / 3-hour forecast API**.
+- ffmpeg must be installed and your webcam must be a DirectShow device.
+- Compatible with PowerShell 5.1+ and Windows Task Scheduler.
+
+---
 
 ## 📃 License
 
-This project is open for personal use and learning. Feel free to adapt and share it — but never publish your API keys or private configuration files.
+Open for personal use and learning. Feel free to adapt and share — never publish your API keys or private config files.
