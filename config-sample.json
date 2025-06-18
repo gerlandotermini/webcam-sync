@@ -8,6 +8,8 @@
   "sftpUser": "username",
   "remotePath": "~/public_html/wp-content/uploads/webcam",
   "ffmpegPath": "C:/Program Files/ffmpeg/bin/ffmpeg.exe",
+  "videoDevice": "USB Video Device",
+  "videoSize": "960x720",
   "fontEmoji": "/Windows/Fonts/seguiemj.ttf",
   "fontDate": "/Windows/Fonts/cour.ttf",
   "dateFormat": "yyyy-MM-dd HH.mm",

@@ -52,7 +52,7 @@ $filter = "drawtext=fontfile=$($config.fontEmoji):text='$weatherText':fontcolor=
           "drawtext=fontfile=$($config.fontDate):text='$dateTimeText':fontcolor=white:fontsize=24:box=1:boxcolor=black@0.5:boxborderw=5:x=w-text_w-10:y=h-text_h-10"
 
 # Capture image using ffmpeg (quiet, overwrite)
-& "$($config.ffmpegPath)" -hide_banner -loglevel error -y -f dshow -video_size 960x720 -i video="USB Video Device" -frames:v 1 -vf $filter "$($config.imagePath)"
+& "$($config.ffmpegPath)" -hide_banner -loglevel error -y -f dshow -video_size $($config.videoSize) -i video="$($config.videoDevice)" -frames:v 1 -vf $filter "$($config.imagePath)"
 
 # Check ffmpeg exit code
 if ($LASTEXITCODE -eq 0) {
