@@ -1,0 +1,14 @@
+{
+  "apiKey": "your_api_key_here",
+  "latitude": "weather_latitude",
+  "longitude": "weather_longitude",
+  "sftpHost": "sftp_host",
+  "sftpPort": "22",
+  "sftpKey": "C:/path/to/your/id_rsa_private_key",
+  "sftpUser": "username",
+  "remotePath": "~/public_html/wp-content/uploads/webcam",
+  "ffmpegPath": "C:/Program Files/ffmpeg/bin/ffmpeg.exe",
+  "fontEmoji": "/Windows/Fonts/seguiemj.ttf",
+  "fontDate": "/Windows/Fonts/cour.ttf",
+  "imagePath": "C:/path/to/local_image_file.jpg"
+}
