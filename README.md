@@ -34,6 +34,8 @@ This PowerShell script captures an image from your USB webcam, overlays the curr
   "sftpKey": "C:/Users/you/.ssh/id_rsa",
   "remotePath": "~/public_html/wp-content/uploads/webcam",
   "ffmpegPath": "C:/Program Files/ffmpeg/bin/ffmpeg.exe",
+  "videoDevice": "USB Video Device",
+  "videoSize": "960x720",
   "fontEmoji": "/Windows/Fonts/seguiemj.ttf",
   "fontDate": "/Windows/Fonts/cour.ttf",
   "dateFormat": "yyyy-MM-dd HH.mm",
