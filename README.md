@@ -1,17 +1,120 @@
-# Webcam Weather Uploader
 
-This PowerShell script captures an image from your webcam, overlays the current weather forecast and date/time, and uploads it to a remote SFTP server.
+# 📸 Webcam Weather Uploader
 
-## Setup
+This PowerShell script captures an image from your USB webcam, overlays the current local weather forecast and date/time, and uploads it to a remote SFTP server. It’s designed to run automatically at regular intervals using Windows Task Scheduler.
 
-1. Install [ffmpeg](https://ffmpeg.org/download.html) and note the path to `ffmpeg.exe`.
-2. Copy `config-sample.json` to `config.json`.
-3. Edit `config.json` with your API key, coordinates, SFTP credentials, and local paths.
-4. Run `capture.ps1` via PowerShell or Windows Task Scheduler.
+## 📦 Setup Instructions
 
-## Notes
+### 1️⃣ Install Dependencies
+
+- **[ffmpeg](https://ffmpeg.org/download.html)**  
+  Download and install ffmpeg for Windows. Note the full path to `ffmpeg.exe`.
+
+- **OpenWeatherMap API Key**  
+  Create a free account at [openweathermap.org](https://openweathermap.org/api) and generate an API key for accessing the weather data.
+
+## 2️⃣ Set Up Your Configuration
+
+- Copy `config-sample.json` to `config.json`
+- Open `config.json` and fill in:
+  - Your OpenWeatherMap API key
+  - Latitude & longitude (decimal degrees)
+  - SFTP server details (host, port, user, key path)
+  - Local paths to ffmpeg, fonts, and webcam image destination
+
+**Example:**  
+```json
+{
+  "apiKey": "your_api_key_here",
+  "latitude": "40.7587",
+  "longitude": "-74.9799",
+  "sftpHost": "your.server.com",
+  "sftpPort": "2299",
+  "sftpUser": "your_username",
+  "sftpKey": "C:/Users/you/.ssh/id_rsa",
+  "remotePath": "~/public_html/content/uploads/webcam",
+  "ffmpegPath": "C:/Program Files/ffmpeg/bin/ffmpeg.exe",
+  "fontEmoji": "/Windows/Fonts/seguiemj.ttf",
+  "fontDate": "/Windows/Fonts/cour.ttf",
+  "imagePath": "C:/Users/you/Misc/webcam/live.jpg"
+}
+```
+
+## 3️⃣ Test the Script
+
+Open PowerShell, navigate to the project folder, and run:
+
+```powershell
+.\capture.ps1
+```
+
+Check the output image and confirm uploads are working.
+
+## 📅 Automating with Windows Task Scheduler
+
+To run this script at regular intervals automatically:
+
+### Create a New Task:
+1. Press `Windows + R`, type `taskschd.msc`, and press Enter.
+2. Click **Create Task**
+
+**General Tab:**
+- Name the task (e.g. `Webcam Weather Uploader`)
+- Choose **Run whether user is logged on or not**
+- Check **Run with highest privileges**
+
+**Triggers Tab:**
+- Click **New**
+- Begin task: `On a schedule`
+- Daily schedule
+- Start at `7:30 AM`
+- Repeat task every `10 minutes`
+- For a duration of `9 hours` (until `4:30 PM`)
+
+**Actions Tab:**
+- Click **New**
+- Action: `Start a program`
+- Program/script:
+  ```powershell
+  powershell.exe
+  ```
+- Add arguments:
+  ```powershell
+  -ExecutionPolicy Bypass -File "C:\Path\To\webcam-weather\capture.ps1"
+  ```
+- Start in:
+  ```
+  C:\Path\To\webcam-weather
+  ```
+
+**Conditions Tab:**
+- Uncheck **Start the task only if the computer is on AC power** (optional)
+
+Click **OK** and enter your Windows password if prompted.
+
+## 📄 Project Structure
+
+```
+webcam-weather/
+├── capture.ps1               # Main script
+├── config-sample.json        # Sample config for users to copy and edit
+├── .gitignore                # Prevents config.json from being committed
+└── README.md                 # This documentation
+```
+
+## 🔄 Example Schedule
+
+| Start Time | End Time | Frequency |
+|------------|----------|------------|
+| 7:30 AM    | 4:30 PM  | Every 10 min |
+
+## 📌 Notes
 
 - `config.json` is excluded from version control via `.gitignore`.
-- Uses OpenWeatherMap 5-day/3-hour forecast API.
-- Script requires PowerShell 5.1+.
+- The script uses OpenWeatherMap’s **5-day / 3-hour forecast API** to retrieve local weather conditions.
+- ffmpeg must be installed and your webcam must be detected as a DirectShow device on Windows.
+- The script is designed for PowerShell 5.1+ and Windows Task Scheduler.
 
+## 📃 License
+
+This project is open for personal use and learning. Feel free to adapt and share it — but never publish your API keys or private configuration files.
