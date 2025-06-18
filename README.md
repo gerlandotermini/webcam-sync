@@ -26,17 +26,17 @@ This PowerShell script captures an image from your USB webcam, overlays the curr
 ```json
 {
   "apiKey": "your_api_key_here",
-  "latitude": "40.7587",
-  "longitude": "-74.9799",
+  "latitude": "40.123",
+  "longitude": "-73.123",
   "sftpHost": "your.server.com",
-  "sftpPort": "2299",
+  "sftpPort": "22",
   "sftpUser": "your_username",
   "sftpKey": "C:/Users/you/.ssh/id_rsa",
-  "remotePath": "~/public_html/content/uploads/webcam",
+  "remotePath": "~/public_html/wp-content/uploads/webcam",
   "ffmpegPath": "C:/Program Files/ffmpeg/bin/ffmpeg.exe",
   "fontEmoji": "/Windows/Fonts/seguiemj.ttf",
   "fontDate": "/Windows/Fonts/cour.ttf",
-  "imagePath": "C:/Users/you/Misc/webcam/live.jpg"
+  "imagePath": "C:/Users/you/webcam/live.jpg"
 }
 ```
 
