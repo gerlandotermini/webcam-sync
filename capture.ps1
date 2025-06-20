@@ -95,7 +95,7 @@ catch {
 }
 
 # Build weather text line with emojis and wind direction
-$weatherText = "🌡️ $currentTemp$degree C   💧 $humidity\\%   $emoji $forecastDesc   💨 $windSpeed km/h    🧭 $windDir"
+$weatherText = "🌡️ $currentTemp$degree C   💧 $humidity\\%   💨 $windSpeed km/h    🧭 $windDir   $emoji $forecastDesc"
 $dateTimeText = $now.ToString($config.dateFormat)
 
 # Build ffmpeg drawtext filter with one translucent black bar background
