@@ -1,3 +1,4 @@
-# Ignore personal config file
+# Ignore personal config file, logs and images
 config.json
+*.log
 *.jpg

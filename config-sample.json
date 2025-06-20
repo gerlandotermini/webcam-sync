@@ -1,17 +1,17 @@
 {
   "apiKey": "your_api_key_here",
-  "latitude": "weather_latitude",
-  "longitude": "weather_longitude",
-  "sftpHost": "sftp_host",
+  "latitude": "40.123",
+  "longitude": "-73.123",
+  "sftpHost": "your.server.com",
   "sftpPort": "22",
-  "sftpKey": "C:/path/to/your/id_rsa_private_key",
-  "sftpUser": "username",
+  "sftpUser": "your_username",
+  "sftpKey": "C:/Users/you/.ssh/id_rsa",
   "remotePath": "~/public_html/wp-content/uploads/webcam",
   "ffmpegPath": "C:/Program Files/ffmpeg/bin/ffmpeg.exe",
   "videoDevice": "USB Video Device",
   "videoSize": "960x720",
-  "fontEmoji": "/Windows/Fonts/seguiemj.ttf",
-  "fontDate": "/Windows/Fonts/cour.ttf",
+  "font": "/Windows/Fonts/arial.ttf",
   "dateFormat": "yyyy-MM-dd HH.mm",
-  "imagePath": "C:/path/to/local_image_file.jpg"
+  "imagePath": "C:/Users/you/webcam/webcam.jpg",
+  "logFile": "C:/Users/you/webcam/capture.log"
 }
