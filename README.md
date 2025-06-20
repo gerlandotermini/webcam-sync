@@ -1,3 +1,4 @@
+
 # 📸 Webcam Weather Uploader
 
 This PowerShell script captures an image from your USB webcam, overlays the current local weather forecast and date/time, and uploads it to a remote SFTP server. It’s designed to run automatically at regular intervals using Windows Task Scheduler.
@@ -124,6 +125,21 @@ webcam-weather/
 | Start Time | End Time | Frequency |
 |------------|----------|------------|
 | 7:30 AM    | 4:30 PM  | Every 10 min |
+
+## 🌤️ Icon Legend
+
+| Icon | Meaning             |
+|:------|:--------------------|
+| 🌡️    | Temperature          |
+| ⛈️    | Thunderstorm         |
+| 🌧️    | Rain / Drizzle       |
+| ❄️    | Snow                 |
+| 🌫️    | Fog / Mist / Haze    |
+| ☀️    | Clear sky            |
+| ☁️    | Clouds               |
+| 💨    | Wind speed           |
+| 🧭    | Wind direction       |
+| 💧    | Humidity             |
 
 ## 📌 Notes
 

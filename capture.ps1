@@ -1,7 +1,7 @@
 ﻿# Config file path
 $configFile = ".\config.json"
 
-# Check if config file exists
+# Load config file, or exit if missing
 if (-Not (Test-Path $configFile)) {
     Write-Error "Configuration file $configFile not found. Please create it from config-sample.json."
     exit 1
@@ -29,6 +29,25 @@ foreach ($field in $requiredFields) {
     }
 }
 
+# Logging helper for errors only
+function Write-Log($message) {
+    $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+    Add-Content -Path $config.logFile -Value "[$timestamp] ERROR: $message"
+}
+
+# Function to convert wind degrees to compass direction
+function Get-WindDirection($deg) {
+    if ($deg -ge 337.5 -or $deg -lt 22.5) { return "Nord" }
+    elseif ($deg -ge 22.5 -and $deg -lt 67.5) { return "Nord-Est" }
+    elseif ($deg -ge 67.5 -and $deg -lt 112.5) { return "Est" }
+    elseif ($deg -ge 112.5 -and $deg -lt 157.5) { return "Sud-Est" }
+    elseif ($deg -ge 157.5 -and $deg -lt 202.5) { return "Sud" }
+    elseif ($deg -ge 202.5 -and $deg -lt 247.5) { return "Sud-Ovest" }
+    elseif ($deg -ge 247.5 -and $deg -lt 292.5) { return "Ovest" }
+    elseif ($deg -ge 292.5 -and $deg -lt 337.5) { return "Nord-Ovest" }
+    else { return "?" }
+}
+
 # Get current date and time
 $now = Get-Date
 $timestamp = $now.ToString("yyyyMMdd")
@@ -39,55 +58,68 @@ $degree = [char]0x00B0
 # Weather API URL
 $forecastUrl = "http://api.openweathermap.org/data/2.5/forecast?lat=$($config.latitude)&lon=$($config.longitude)&appid=$($config.apiKey)&units=metric&lang=it"
 
-# Get forecast JSON
+# Fetch forecast
 try {
     $forecastResponse = Invoke-RestMethod -Uri $forecastUrl -UseBasicParsing
 
-    if ($forecastResponse.list -and $forecastResponse.list.Count -gt 0) {
-        $currentTemp = [math]::Round($forecastResponse.list[0].main.temp)
-        $descRaw = $forecastResponse.list[0].weather[0].description
-        if ($descRaw.Length -gt 0) {
-            $forecastDesc = $descRaw.Substring(0,1).ToUpper() + $descRaw.Substring(1)
-        } else {
-            $forecastDesc = "Non pervenuto"
-        }
-    } else {
-        $currentTemp = "NA"
-        $forecastDesc = "Non pervenuto"
+    $currentTemp   = [math]::Round($forecastResponse.list[0].main.temp)
+    $forecastCode  = $forecastResponse.list[0].weather[0].id
+    $forecastDesc  = if ($forecastResponse.list[0].weather[0].description.Length -gt 0) { 
+        $forecastResponse.list[0].weather[0].description.Substring(0,1).ToUpper() + $forecastResponse.list[0].weather[0].description.Substring(1) 
+    } else { 
+        "Non pervenuto" 
+    }
+    $windSpeed     = [math]::Round($forecastResponse.list[0].wind.speed * 3.6, 1)  # Convert m/s to km/h
+    $windDeg       = $forecastResponse.list[0].wind.deg
+    $windDir       = Get-WindDirection $windDeg
+    $humidity      = $forecastResponse.list[0].main.humidity
+
+    switch ($forecastCode) {
+        { $_ -ge 200 -and $_ -lt 300 } { $emoji = "⛈️"; break }
+        { $_ -ge 300 -and $_ -lt 600 } { $emoji = "🌧️"; break }
+        { $_ -ge 600 -and $_ -lt 700 } { $emoji = "❄️"; break }
+        { $_ -ge 700 -and $_ -lt 800 } { $emoji = "🌫️"; break }
+        800                            { $emoji = "☀️"; break }
+        { $_ -gt 800 -and $_ -lt 900 } { $emoji = "☁️"; break }
+        default                        { $emoji = "🌡️" }
     }
 }
 catch {
-    $currentTemp = "NA"
-    $forecastDesc = "Non pervenuto"
+    $currentTemp   = "NA"
+    $forecastDesc  = "Non pervenuto"
+    $windSpeed     = "NA"
+    $windDir       = "?"
+    $humidity      = "NA"
+    $emoji         = "❓"
+    Write-Log "Failed to fetch weather data: $_"
 }
 
-# Build overlay texts
-$weatherText = "$currentTemp$degree C - $forecastDesc"
+# Build weather text line with emojis and wind direction
+$weatherText = "🌡️ $currentTemp$degree C   💧 $humidity\\%   $emoji $forecastDesc   💨 $windSpeed km/h    🧭 $windDir"
 $dateTimeText = $now.ToString($config.dateFormat)
 
-# Build FFmpeg filter
-$filter = "drawtext=fontfile=$($config.font):text='$weatherText':fontcolor=white:fontsize=20:box=1:boxcolor=black@0.5:boxborderw=10:x=15:y=h-text_h-15," +
-          "drawtext=fontfile=$($config.font):text='$dateTimeText':fontcolor=white:fontsize=20:box=1:boxcolor=black@0.5:boxborderw=10:x=w-text_w-15:y=h-text_h-15"
+# Build ffmpeg drawtext filter with one translucent black bar background
+$filter = "drawbox=x=0:y=ih-40:w=iw:h=40:color=black@0.5:t=fill," +
+          "drawtext=fontfile=$($config.font):text='$weatherText':fontcolor=white:fontsize=20:x=15:y=h-30," +
+          "drawtext=fontfile=$($config.font):text='$dateTimeText':fontcolor=white:fontsize=20:x=w-text_w-15:y=h-25"
 
 # Capture image
 & "$($config.ffmpegPath)" -hide_banner -loglevel error -y -f dshow -video_size $($config.videoSize) -i video="$($config.videoDevice)" -frames:v 1 -vf $filter "$($config.imagePath)"
 
-# Initialize log
-$logMessage = "$($now.ToString("yyyy-MM-dd HH:mm")) | "
+if ($LASTEXITCODE -ne 0) {
+    Write-Log "Failed to capture image with ffmpeg."
+}
 
-# Upload if capture succeeded
-if ($LASTEXITCODE -eq 0) {
-    scp -q -P $($config.sftpPort) -i "$($config.sftpKey)" "$($config.imagePath)" "$($config.sftpUser)@$($config.sftpHost):$($config.remotePath)/live.jpg"
-    $logMessage += "Uploaded live.jpg"
+# Upload live image
+scp -q -P $($config.sftpPort) -i "$($config.sftpKey)" "$($config.imagePath)" "$($config.sftpUser)@$($config.sftpHost):$($config.remotePath)/live.jpg"
+if ($LASTEXITCODE -ne 0) {
+    Write-Log "Failed to upload live image to server."
+}
 
-    if (($currentHour -eq 9) -and ($currentMinute -eq 0)) {
-        scp -q -P $($config.sftpPort) -i "$($config.sftpKey)" "$($config.imagePath)" "$($config.sftpUser)@$($config.sftpHost):$($config.remotePath)/$timestamp.jpg"
-        $logMessage += " and $timestamp.jpg"
+# Upload timestamped image at 9:00 AM
+if (($currentHour -eq 9) -and ($currentMinute -eq 0)) {
+    scp -q -P $($config.sftpPort) -i "$($config.sftpKey)" "$($config.imagePath)" "$($config.sftpUser)@$($config.sftpHost):$($config.remotePath)/$timestamp.jpg"
+    if ($LASTEXITCODE -ne 0) {
+        Write-Log "Failed to upload timestamped image at 9:00 AM."
     }
 }
-else {
-    $logMessage += "Failed to capture image"
-}
-
-# Write log entry
-Add-Content -Path $($config.logFile) -Value $logMessage
