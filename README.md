@@ -131,15 +131,15 @@ webcam-weather/
 | Icon | Meaning             |
 |:------|:--------------------|
 | 🌡️    | Temperature          |
+| 💧    | Humidity             |
+| 💨    | Wind speed           |
+| 🧭    | Wind direction       |
 | ⛈️    | Thunderstorm         |
 | 🌧️    | Rain / Drizzle       |
 | ❄️    | Snow                 |
 | 🌫️    | Fog / Mist / Haze    |
 | ☀️    | Clear sky            |
 | ☁️    | Clouds               |
-| 💨    | Wind speed           |
-| 🧭    | Wind direction       |
-| 💧    | Humidity             |
 
 ## 📌 Notes
 
