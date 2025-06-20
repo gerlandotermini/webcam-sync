@@ -1,5 +1,33 @@
-﻿# Load config from JSON file
-$config = Get-Content -Raw -Path ".\config.json" | ConvertFrom-Json
+﻿# Config file path
+$configFile = ".\config.json"
+
+# Check if config file exists
+if (-Not (Test-Path $configFile)) {
+    Write-Error "Configuration file $configFile not found. Please create it from config-sample.json."
+    exit 1
+}
+
+# Load config
+try {
+    $config = Get-Content -Raw -Path $configFile | ConvertFrom-Json
+} catch {
+    Write-Error "Failed to parse $configFile. Check its JSON syntax."
+    exit 1
+}
+
+# Validate required fields
+$requiredFields = @(
+    "apiKey", "latitude", "longitude", "sftpHost", "sftpPort", "sftpUser",
+    "sftpKey", "remotePath", "ffmpegPath", "videoDevice", "videoSize",
+    "fontEmoji", "fontDate", "dateFormat", "imagePath"
+)
+
+foreach ($field in $requiredFields) {
+    if (-not $config.PSObject.Properties.Name -contains $field) {
+        Write-Error "Missing required config property: $field"
+        exit 1
+    }
+}
 
 # Get current date and time
 $now = Get-Date
@@ -28,13 +56,13 @@ try {
 
     # Map weather codes to emoji
     switch ($weatherCode) {
-        { $_ -ge 200 -and $_ -lt 300 } { $emoji = "⛈️"; break }    # Thunderstorm
-        { $_ -ge 300 -and $_ -lt 600 } { $emoji = "🌧️"; break }    # Rain/Drizzle
-        { $_ -ge 600 -and $_ -lt 700 } { $emoji = "❄️"; break }    # Snow
-        { $_ -ge 700 -and $_ -lt 800 } { $emoji = "🌫️"; break }    # Atmosphere (mist, smoke, haze)
-        800                        { $emoji = "☀️"; break }        # Clear
-        { $_ -gt 800 -and $_ -lt 900 } { $emoji = "☁️"; break }    # Clouds
-        default                    { $emoji = "🌡️"; break }       # Unknown / fallback
+        { $_ -ge 200 -and $_ -lt 300 } { $emoji = "⛈️"; break }
+        { $_ -ge 300 -and $_ -lt 600 } { $emoji = "🌧️"; break }
+        { $_ -ge 600 -and $_ -lt 700 } { $emoji = "❄️"; break }
+        { $_ -ge 700 -and $_ -lt 800 } { $emoji = "🌫️"; break }
+        800                            { $emoji = "☀️"; break }
+        { $_ -gt 800 -and $_ -lt 900 } { $emoji = "☁️"; break }
+        default                        { $emoji = "🌡️"; break }
     }
 }
 catch {
