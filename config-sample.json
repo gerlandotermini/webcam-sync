@@ -8,6 +8,7 @@
   "sftpKey": "C:/Users/you/.ssh/id_rsa",
   "remotePath": "~/public_html/wp-content/uploads/webcam",
   "ffmpegPath": "C:/Program Files/ffmpeg/bin/ffmpeg.exe",
+  "ffprobePath": "C:/Program Files/ffmpeg/bin/ffprobe.exe",
   "videoDevice": "USB Video Device",
   "videoSize": "960x720",
   "minBrightness": 40,

@@ -110,7 +110,9 @@ do {
 
     $escapedPath = $config.imagePath -replace '\\','/' -replace ':','\:'
     $args = @('-f','lavfi','-i',"movie='$escapedPath',signalstats",'-v','error','-show_entries','frame_tags=lavfi.signalstats.YAVG','-of','default=noprint_wrappers=1:nokey=1')
-    $brightnessResult = & ffprobe @args | Out-String
+    $ffprobeExe = $config.ffprobePath
+    
+    $brightnessResult = & "$ffprobeExe" @args | Out-String
     $brightnessResult = $brightnessResult.Trim()
 
     if ($brightnessResult -match '^[\d\.]+$') {
