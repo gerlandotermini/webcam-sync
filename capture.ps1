@@ -93,7 +93,7 @@ catch {
 # -------------------------------
 # Build overlay text
 # -------------------------------
-$weatherText = "🌡️ $temp$degree C  💧 $humidity\\%  💨 $windSpd km/h  🧭 $windDir 🌅 $sunriseStr"
+$weatherText = "🌡️ $temp$degree C  💧 $humidity\\%  💨 $windSpd km/h  🧭 $windDir  🌅 $sunriseStr"
 $dateText = $now.ToString($config.dateFormat)
 $filter = "drawbox=x=0:y=ih-40:w=iw:h=40:color=black@0.5:t=fill," +
           "drawtext=fontfile=$($config.font):text='$weatherText':fontcolor=white:fontsize=20:x=15:y=h-30," +
