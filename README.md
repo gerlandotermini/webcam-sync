@@ -35,6 +35,7 @@ This PowerShell script captures an image from your USB webcam, overlays the curr
   "sftpKey": "C:/Users/you/.ssh/id_rsa",
   "remotePath": "~/public_html/wp-content/uploads/webcam",
   "ffmpegPath": "C:/Program Files/ffmpeg/bin/ffmpeg.exe",
+  "ffprobePath": "C:/Program Files/ffmpeg/bin/ffprobe.exe",
   "videoDevice": "USB Video Device",
   "videoSize": "960x720",
   "minBrightness": 40,
@@ -45,6 +46,7 @@ This PowerShell script captures an image from your USB webcam, overlays the curr
   "imagePath": "C:/Users/you/webcam/webcam.jpg",
   "logFile": "C:/Users/you/webcam/capture.log"
 }
+
 ```
 
 ## 3️⃣ Test the Script
@@ -128,21 +130,6 @@ webcam-weather/
 | Start Time | End Time | Frequency |
 |------------|----------|------------|
 | 7:30 AM    | 4:30 PM  | Every 10 min |
-
-## 🌤️ Icon Legend
-
-| Icon | Meaning             |
-|:------|:--------------------|
-| 🌡️    | Temperature          |
-| 💧    | Humidity             |
-| 💨    | Wind speed           |
-| 🧭    | Wind direction       |
-| ⛈️    | Thunderstorm         |
-| 🌧️    | Rain / Drizzle       |
-| ❄️    | Snow                 |
-| 🌫️    | Fog / Mist / Haze    |
-| ☀️    | Clear sky            |
-| ☁️    | Clouds               |
 
 ## 📌 Notes
 
